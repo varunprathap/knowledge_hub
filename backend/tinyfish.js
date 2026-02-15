@@ -15,7 +15,9 @@ const TINYFISH_API_URL = 'https://agent.tinyfish.ai/v1/automation/run-sse';
 
 function getApiKey() {
   const key = process.env.TINYFISH_API_KEY;
-  if (!key || key === 'your-tinyfish-api-key') return null;
+  if (!key || key === 'your-tinyfish-api-key') {
+    throw new Error('TINYFISH_API_KEY not configured. Add it to backend/.env');
+  }
   return key;
 }
 
@@ -23,7 +25,6 @@ function getApiKey() {
 
 async function callTinyFish(url, goal, profile = 'stealth') {
   const apiKey = getApiKey();
-  if (!apiKey) return null;
 
   try {
     console.log(`TinyFish: ${url.substring(0, 80)}...`);
@@ -128,7 +129,6 @@ RULES:
 
 async function enrichPost(post) {
   if (!post.url) return post;
-  if (!getApiKey()) return post;
 
   try {
     const enriched = { ...post };
@@ -256,8 +256,6 @@ async function fetchMultipleUrls(urls) {
 // ─── Batch enrich multiple posts ───
 
 async function enrichPosts(posts, { concurrency = 1 } = {}) {
-  if (!getApiKey()) return posts;
-
   const results = [];
   // Process one at a time - each post may trigger multiple TinyFish calls
   for (const post of posts) {

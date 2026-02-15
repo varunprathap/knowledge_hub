@@ -40,8 +40,8 @@ app.get('/api/health', async (req, res) => {
     res.json({
       status: 'ok',
       redis: 'connected',
-      openai: openaiKey && openaiKey !== 'sk-your-key-here' ? 'configured' : 'not configured',
-      tinyfish: tinyfishKey && tinyfishKey !== 'your-tinyfish-api-key' ? 'configured' : 'not configured',
+      openai: openaiKey && openaiKey !== 'sk-your-key-here' ? 'configured' : 'MISSING (required)',
+      tinyfish: tinyfishKey && tinyfishKey !== 'your-tinyfish-api-key' ? 'configured' : 'MISSING (required)',
     });
   } catch (err) {
     res.status(500).json({ status: 'error', message: err.message });

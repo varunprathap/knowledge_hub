@@ -70,7 +70,7 @@ Edit `backend/.env`:
 |-----|----------|-------------|
 | `REDIS_URL` | Yes | [Redis Cloud](https://cloud.redis.io) (free tier works) |
 | `OPENAI_API_KEY` | Yes | [OpenAI Platform](https://platform.openai.com/api-keys) |
-| `TINYFISH_API_KEY` | Optional | [TinyFish](https://agent.tinyfish.ai/dashboard) |
+| `TINYFISH_API_KEY` | Yes | [TinyFish](https://agent.tinyfish.ai/dashboard) |
 
 ### 4. Use It
 
