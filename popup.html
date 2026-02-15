@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Knowledge Hub</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <span class="logo-icon">🧠</span>
+        <h1>knowledge hub</h1>
+      </div>
+      <div class="header-actions">
+        <button id="scanBtn" class="btn btn-primary" title="Scan page">
+          <span class="scan-icon">↓</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Backend Status -->
+    <div id="backendBanner" class="backend-banner hidden">
+      <span class="backend-dot"></span>
+      <span id="backendStatus">connecting...</span>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-container">
+      <div class="search-input-wrap">
+        <span class="search-icon">⌕</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="search your knowledge...">
+        <button id="searchClear" class="search-clear hidden">✕</button>
+      </div>
+    </div>
+
+    <!-- Status Banner -->
+    <div id="statusBanner" class="status-banner hidden">
+      <span id="statusIcon"></span>
+      <span id="statusText"></span>
+    </div>
+
+    <!-- Sync Progress Bar (background sync) -->
+    <div id="syncProgressBar" class="sync-progress-bar hidden">
+      <div class="sync-progress-header">
+        <span id="syncProgressText" class="sync-progress-text">syncing...</span>
+        <span id="syncProgressCount" class="sync-progress-count">0/0</span>
+      </div>
+      <div class="sync-progress-track">
+        <div id="syncProgressFill" class="sync-progress-fill" style="width: 0%"></div>
+      </div>
+      <div class="sync-progress-hint">you can close this popup - sync continues in background</div>
+    </div>
+
+    <!-- View Tabs (Categories + Memory) -->
+    <nav class="category-tabs">
+      <button class="tab active" data-category="tasks">
+        <span class="tab-icon">⚡</span>
+        <span class="tab-label">tasks</span>
+        <span class="tab-count hidden" id="count-tasks">0</span>
+      </button>
+      <button class="tab" data-category="jobs">
+        <span class="tab-icon">💼</span>
+        <span class="tab-label">jobs</span>
+        <span class="tab-count hidden" id="count-jobs">0</span>
+      </button>
+      <button class="tab" data-category="ai">
+        <span class="tab-icon">🤖</span>
+        <span class="tab-label">ai</span>
+        <span class="tab-count hidden" id="count-ai">0</span>
+      </button>
+      <button class="tab" data-category="learning">
+        <span class="tab-icon">📚</span>
+        <span class="tab-label">learn</span>
+        <span class="tab-count hidden" id="count-learning">0</span>
+      </button>
+      <button class="tab" data-category="articles">
+        <span class="tab-icon">📰</span>
+        <span class="tab-label">articles</span>
+        <span class="tab-count hidden" id="count-articles">0</span>
+      </button>
+      <button class="tab" data-category="networking">
+        <span class="tab-icon">🤝</span>
+        <span class="tab-label">network</span>
+        <span class="tab-count hidden" id="count-networking">0</span>
+      </button>
+      <button class="tab" data-category="other">
+        <span class="tab-icon">📌</span>
+        <span class="tab-label">other</span>
+        <span class="tab-count hidden" id="count-other">0</span>
+      </button>
+      <button class="tab tab-memory" data-category="memory">
+        <span class="tab-icon">🧠</span>
+        <span class="tab-label">memory</span>
+      </button>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="items-container">
+      <!-- Search Results View -->
+      <div id="searchResults" class="search-results hidden">
+        <div class="search-results-header">
+          <span class="search-results-icon">🔍</span>
+          <span id="searchResultsCount">0 results</span>
+          <button id="searchBack" class="btn btn-ghost btn-sm">✕ clear</button>
+        </div>
+        <ul id="searchResultsList" class="items-list"></ul>
+      </div>
+
+      <!-- Items List View -->
+      <div id="itemsView">
+        <ul id="itemsList" class="items-list"></ul>
+        
+        <div id="emptyState" class="empty-state hidden">
+          <div class="empty-icon">📭</div>
+          <h3>no items yet</h3>
+          <p>go to LinkedIn saved posts and click scan</p>
+          <a href="https://www.linkedin.com/my-items/saved-posts/" target="_blank" class="btn btn-secondary">
+            open LinkedIn
+          </a>
+        </div>
+      </div>
+
+      <!-- Memory View -->
+      <div id="memoryView" class="memory-view hidden">
+        <!-- Stats -->
+        <div class="memory-stats">
+          <div class="stat-card">
+            <span class="stat-number" id="statPosts">0</span>
+            <span class="stat-label">posts saved</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" id="statTopics">0</span>
+            <span class="stat-label">topics</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-number" id="statSkills">0</span>
+            <span class="stat-label">skills</span>
+          </div>
+        </div>
+
+        <!-- Topics Cloud -->
+        <div class="memory-section">
+          <h3 class="memory-section-title">topics you're learning</h3>
+          <div id="topicCloud" class="topic-cloud">
+            <div class="loading-placeholder">loading topics...</div>
+          </div>
+        </div>
+
+        <!-- Skills -->
+        <div class="memory-section">
+          <h3 class="memory-section-title">skills detected</h3>
+          <div id="skillsList" class="skills-list">
+            <div class="loading-placeholder">loading skills...</div>
+          </div>
+        </div>
+
+        <!-- Concepts -->
+        <div class="memory-section">
+          <h3 class="memory-section-title">key concepts</h3>
+          <div id="conceptsList" class="concepts-list">
+            <div class="loading-placeholder">loading concepts...</div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <button id="exportBtn" class="btn btn-ghost">export</button>
+      <button id="clearBtn" class="btn btn-ghost">clear all</button>
+    </footer>
+  </div>
+
+  <!-- Task Assistant Modal -->
+  <div id="taskModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content task-modal">
+      <div class="task-modal-header">
+        <h3 id="taskModalTitle">task</h3>
+        <button id="closeTaskModal" class="btn-close">✕</button>
+      </div>
+      <div class="task-modal-body">
+        <div id="taskItemPreview" class="task-item-preview"></div>
+
+        <!-- Relevance note from AI -->
+        <div id="taskRelevance" class="task-relevance hidden">
+          <div class="relevance-label">why this matters</div>
+          <p id="taskRelevanceText"></p>
+        </div>
+
+        <!-- Topics/Skills tags -->
+        <div id="taskTags" class="task-tags hidden"></div>
+
+        <div id="aiChat" class="ai-chat">
+          <div id="aiMessage" class="ai-message"></div>
+        </div>
+
+        <!-- Similar Posts -->
+        <div id="similarPosts" class="similar-posts hidden">
+          <h4 class="similar-title">related in your memory</h4>
+          <ul id="similarList" class="similar-list"></ul>
+        </div>
+
+        <div id="taskActions" class="task-actions"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reclassify Modal -->
+  <div id="reclassifyModal" class="modal hidden">
+    <div class="modal-backdrop"></div>
+    <div class="modal-content">
+      <h3>change category</h3>
+      <div class="modal-body">
+        <p id="reclassifyItemTitle" class="modal-item-title"></p>
+        <div class="category-options" id="categoryOptions"></div>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelReclassify" class="btn btn-ghost">cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="api.js"></script>
+  <script src="storage.js"></script>
+  <script src="classifier.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

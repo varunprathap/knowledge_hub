@@ -1,0 +1,44 @@
+{
+    "manifest_version": 3,
+    "name": "Knowledge Hub",
+    "version": "2.0.0",
+    "description": "Your personal knowledge graph. Capture, analyze, and search content from LinkedIn using AI-powered memory.",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "tabs",
+        "scripting",
+        "downloads"
+    ],
+    "host_permissions": [
+        "https://www.linkedin.com/*",
+        "http://localhost:3456/*"
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "16": "icons/icon16.png",
+            "48": "icons/icon48.png",
+            "128": "icons/icon128.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://www.linkedin.com/*"
+            ],
+            "js": [
+                "content.js"
+            ],
+            "css": []
+        }
+    ],
+    "icons": {
+        "16": "icons/icon16.png",
+        "48": "icons/icon48.png",
+        "128": "icons/icon128.png"
+    }
+}
